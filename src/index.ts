@@ -18,7 +18,7 @@ type PluginFunction = (pluginConfig: IPluginConfig, context: IContext) => any;
 
 let verified: boolean = false;
 
-const verifyConditions: PluginFunction = async (pluginConfig, context): Promise<boolean> => {
+export const verifyConditions: PluginFunction = async (pluginConfig, context): Promise<boolean> => {
   const config: IPluginConfig = {
     documentLocation: pluginConfig.documentLocation || "./openrpc.json",
   };
@@ -32,7 +32,7 @@ const verifyConditions: PluginFunction = async (pluginConfig, context): Promise<
   return verified;
 };
 
-const prepare: PluginFunction = async (pluginConfig, context): Promise<boolean> => {
+export const prepare: PluginFunction = async (pluginConfig, context): Promise<boolean> => {
   if (!verified) {
     throw new SemanticReleaseError("Not verified", "ENOTVERIFIED", "Something went wrong and the openrpc.json was not able to be verified."); //tslint:disable-line
   }
@@ -46,9 +46,4 @@ const prepare: PluginFunction = async (pluginConfig, context): Promise<boolean> 
     path.resolve(process.cwd(), config.documentLocation!),
     context.nextRelease.version,
   ).then(() => true);
-};
-
-export default {
-  verifyConditions,
-  prepare,
 };
