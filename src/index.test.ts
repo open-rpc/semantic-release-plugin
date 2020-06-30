@@ -8,13 +8,14 @@ const appendFile = util.promisify(fs.appendFile);
 const readFile = util.promisify(fs.readFile);
 
 const p = path.resolve(process.cwd(), "./openrpc.json");
+const pSrc = path.resolve(process.cwd(), "./src/openrpc.json");
 
-const touchFile = () => {
-  fs.closeSync(fs.openSync(p, "w"));
+const touchFile = (filePath: string) => {
+  fs.closeSync(fs.openSync(filePath, "w"));
 };
 
-const removeFile = () => {
-  return fs.unlinkSync(p);
+const removeFile = (filePath: string) => {
+  return fs.unlinkSync(filePath);
 };
 
 const testOpenRPC = {
@@ -31,31 +32,42 @@ describe("openrpc plugin", () => {
       });
     });
     it("can pass verifyConditions", () => {
-      touchFile();
+      touchFile(p);
       return verifyConditions({ documentLocation: "./openrpc.json" }, {}).then((valid: boolean) => {
         expect(valid).toEqual(true);
-        removeFile();
+        removeFile(p);
       });
     });
   });
 
   describe("prepare", () => {
     it("can fail if no next release version", () => {
-      touchFile();
+      touchFile(p);
       return prepare({ documentLocation: "./openrpc.json" }, {}).catch((e: SemanticReleaseError) => {
         expect(e.message).toContain("No nextRelease version");
-        removeFile();
+        removeFile(p);
       });
     });
     it("can pass prepare and set the version", async () => {
-      touchFile();
+      touchFile(p);
       await appendFile(p, JSON.stringify(testOpenRPC, null, 4));
       return prepare({ documentLocation: "./openrpc.json" }, { nextRelease: { version: "1.0.0" } })
         .then(async (prepared: boolean) => {
           const file = await readFile(p);
           const openRPCFromFile = JSON.parse(file.toString());
           expect(openRPCFromFile.info.version).toEqual("1.0.0");
-          removeFile();
+          removeFile(p);
+        });
+    });
+    it("can pass prepare and set the version when dir is src", async () => {
+      touchFile(pSrc);
+      await appendFile(pSrc, JSON.stringify(testOpenRPC, null, 4));
+      return prepare({ documentLocation: "src/openrpc.json" }, { nextRelease: { version: "1.0.0" } })
+        .then(async (prepared: boolean) => {
+          const file = await readFile(pSrc);
+          const openRPCFromFile = JSON.parse(file.toString());
+          expect(openRPCFromFile.info.version).toEqual("1.0.0");
+          removeFile(pSrc);
         });
     });
   });
