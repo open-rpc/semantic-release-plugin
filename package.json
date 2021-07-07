@@ -14,7 +14,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/jest": "^25.1.0",
+    "@types/jest": "^26.0.24",
     "@types/node": "^13.1.0",
     "jest": "^25.1.0",
     "ts-jest": "^25.0.0",
