@@ -27,7 +27,7 @@
     "@qiwi/semantic-release-gh-pages-plugin": "^5.2.3",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/commit-analyzer": "^8.0.0",
-    "@semantic-release/error": "^2.2.0",
+    "@semantic-release/error": "^3.0.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^7.0.0",
     "@semantic-release/npm": "^7.0.0",
